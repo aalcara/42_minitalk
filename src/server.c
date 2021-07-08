@@ -6,7 +6,7 @@
 /*   By: aalcara- <aalcara-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/06 14:31:30 by aalcara-          #+#    #+#             */
-/*   Updated: 2021/07/06 20:34:31 by aalcara-         ###   ########.fr       */
+/*   Updated: 2021/07/08 15:17:10 by aalcara-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,23 +17,42 @@ void	server_start(void)
 	char	*str_pid;
 
 	str_pid = ft_itoa(getpid());
-	write(1, "Start client with this sintaxe: ./client [pid] [string]\n", 56);
-	write(1, "pid = ", 6);
+	ft_putstr("Start client with this sintaxe: ./client [PID] [string]\n");
+	write(1, "PID = ", 6);
 	ft_putstr(str_pid);
 	write(1, "\n", 1);
 }
 
 void	handler(int sig)
 {
-	// usleep(1);
+	static int	i = 0;
+	static char	c = 0;
+	int			bit;
+
 	if (sig == SIGUSR1)
-		ft_putchar('1');
+		bit = 1;
 	if (sig == SIGUSR2)
-		ft_putchar('0');
+		bit = 0;
+	c += (bit << i++);
+	if (i >= 7)
+	{
+		if (c == '\0')
+			write(1, "\n", 1);
+		else
+			write(1, &c, 1);
+		c = 0;
+		i = 0;
+	}
 }
 
-int	main(void)
+int	main(int argc, char **argv)
 {
+	(void)argv;
+	if (argc != 1)
+	{
+		ft_putstr("Server don't have paramenters\nUse only: ./server\n");
+		return (1);
+	}
 	server_start();
 	if (signal(SIGUSR1, handler) == SIG_ERR)
 	{
@@ -47,4 +66,5 @@ int	main(void)
 	}
 	while (1)
 		pause();
+	return (0);
 }

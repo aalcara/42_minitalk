@@ -6,7 +6,7 @@
 /*   By: aalcara- <aalcara-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/06 17:34:39 by aalcara-          #+#    #+#             */
-/*   Updated: 2021/07/06 20:10:59 by aalcara-         ###   ########.fr       */
+/*   Updated: 2021/07/07 09:10:27 by aalcara-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include <unistd.h>
 # include <signal.h>
 # include <stdlib.h>
-
-typedef void (*sighandler_t)(int);
+# include <sys/types.h>
 
 # endif
