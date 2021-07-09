@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aalcara- <aalcara-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/06 14:31:30 by aalcara-          #+#    #+#             */
-/*   Updated: 2021/07/09 10:41:47 by aalcara-         ###   ########.fr       */
+/*   Updated: 2021/07/09 17:53:30 by aalcara-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,31 +23,55 @@ void	server_start(void)
 	write(1, "\n", 1);
 }
 
+int	ft_getclientpid(int *i, char *str)
+{
+	int	client_pid;
+
+	i[2]++;
+	client_pid = ft_atoi(str);
+	i[1] = 0;
+	i[0] = 0;
+	return (ft_atoi(str));
+}
+
+void	putbuff(char *str, int *i, int client_pid)
+{
+	ft_putstr(str);
+	if (str[i[1]] == '\0')
+	{
+		i[2]++;
+		ft_putchar('\n');
+		kill(client_pid, SIGUSR1);
+	}
+	i[0] = 0;
+	i[1] = 0;
+}
 void	handler(int sig)
 {
-	static int	i = 0;
-	static int	j = 0;
+	static int	i[3] = {0, 0, 2};
 	static char	str[100];
 	int			bit;
+	static int	client_pid = 0;
 
-	if (i >= 7)
+	if (i[0] > 7)
 	{
-		j++;
-		i = 0;
+		i[1]++;
+		i[0] = 0;
 	}
 	if (sig == SIGUSR1)
 		bit = 1;
 	else
 		bit = 0;
-	str[j] += (bit << i++);
-	if (i >= 7 && (str[j] == '\0' || j == 49))
+	str[i[1]] += (bit << i[0]++);
+	if (i[0] > 7 && str[i[1]] == '\0' && (i[2] % 2 == 0))
 	{
-		ft_putstr(str);
-		if (str[j] == '\0')
-			ft_putchar('\n');
+		client_pid = ft_getclientpid(&i[0], str);
 		ft_memset(str, '\0', 100);
-		i = 0;
-		j = 0;
+	}
+	if (i[0] > 7 && (str[i[1]] == '\0' || i[1] == 50))
+	{
+		putbuff(str, &i[0], client_pid);
+		ft_memset(str, '\0', 100);
 	}
 }
 
